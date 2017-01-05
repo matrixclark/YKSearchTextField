@@ -14,6 +14,7 @@ public protocol YKSearchTextFieldDataSourceDelegate: NSObjectProtocol {
     func searchTextField(searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int
     func searchTextField(searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     func searchTextField(searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func searchTextField(searchTextField: YKSearchTextField, textDidChange text: String?)
     func searchTextField(searchTextField: YKSearchTextField, didHideTableView tableView:UITableView)
 }
 
@@ -23,12 +24,12 @@ public protocol YKSearchTextFieldDataSourceDelegate: NSObjectProtocol {
 
 
 public class YKSearchTextField: UITextField {
-
-
+    
+    
     
     public weak var dataSourceDelegate: YKSearchTextFieldDataSourceDelegate? {
         didSet {
-           popView.dataSourceDelegate = self.dataSourceDelegate
+            popView.dataSourceDelegate = self.dataSourceDelegate
         }
     }
     
@@ -50,15 +51,20 @@ public class YKSearchTextField: UITextField {
     // MARK: Setup Methods
     private func setupTextField() {
         addTarget(self, action: #selector(YKSearchTextField.editingBegin(_:)), forControlEvents:.EditingDidBegin)
+        addTarget(self, action: #selector(YKSearchTextField.editingChange(_:)), forControlEvents:.EditingChanged)
         popView.textField = self
     }
     
     
-    
-
-    func editingBegin(textField: UITextField) {
-         popView.show()
+    func editingBegin(textField: YKSearchTextField) {
+        popView.show()
     }
     
-
+    func editingChange(textField: YKSearchTextField) {
+        if self.dataSourceDelegate != nil {
+            self.dataSourceDelegate?.searchTextField(textField, textDidChange: textField.text)
+        }
+    }
+    
+    
 }

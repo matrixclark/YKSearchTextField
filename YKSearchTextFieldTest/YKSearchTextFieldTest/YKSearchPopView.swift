@@ -222,6 +222,10 @@ extension YKSearchPopView: UITableViewDelegate {
         if let dataSourceDelegate = dataSourceDelegate {
             dataSourceDelegate.searchTextField(textField!, didSelectRowAtIndexPath: indexPath)
         }
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        self.dismiss()
+
       //  self.tableViewAppearanceChange(false)
     }
     

@@ -14,6 +14,7 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     let textField = YKSearchTextField()
     
     var dataArray = [String]()
+    var filterArray = [String]()
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,6 +30,7 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.dataArray = ["北京","广州","上海","深圳"]
+        self.filterArray.appendContentsOf(self.dataArray)
         
         textField.dataSourceDelegate = self
         textField.frame = CGRectMake(70, 7, ScreenWidth - 80, 30)
@@ -44,7 +46,7 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     
     
     func searchTextField(searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int {
-        return self.dataArray.count
+        return self.filterArray.count
     }
     
     func searchTextField(searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -53,7 +55,7 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
             cell = UITableViewCell(style: .Default, reuseIdentifier: "cell")
         }
         
-        cell?.textLabel?.text = dataArray[indexPath.row]
+        cell?.textLabel?.text = filterArray[indexPath.row]
         cell?.textLabel?.numberOfLines = 0;
         cell?.textLabel?.font = UIFont.systemFontOfSize(14)
         
@@ -63,11 +65,30 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     
     func searchTextField(searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: NSIndexPath) {
  
-        textField.text = dataArray[indexPath.row]
+        textField.text = filterArray[indexPath.row]
     }
     
     
     func searchTextField(searchTextField: YKSearchTextField, didHideTableView tableView:UITableView) {
+        
+    }
+    
+    
+    func searchTextField(searchTextField: YKSearchTextField, textDidChange text: String?) {
+        self.filterArray.removeAll()
+        if text?.characters.count > 0 {
+            for string in self.dataArray {
+                if string.containsString(text!) {
+                    self.filterArray.append(string)
+                }
+            }
+            
+        }else{
+            
+            self.filterArray.appendContentsOf(self.dataArray)
+        }
+        
+        textField.popView.tableView.reloadData()
         
     }
 
