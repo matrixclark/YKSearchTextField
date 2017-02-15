@@ -7,6 +7,30 @@
 //
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     
@@ -21,7 +45,7 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
         // Initialization code
     }
 
-    override func setSelected( selected: Bool, animated: Bool) {
+    override func setSelected( _ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
@@ -30,12 +54,12 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.dataArray = ["北京","广州","上海","深圳"]
-        self.filterArray.appendContentsOf(self.dataArray)
+        self.filterArray.append(contentsOf: self.dataArray)
         
         textField.dataSourceDelegate = self
-        textField.frame = CGRectMake(70, 7, ScreenWidth - 80, 30)
+        textField.frame = CGRect(x: 70, y: 7, width: ScreenWidth - 80, height: 30)
         textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.greenColor().CGColor
+        textField.layer.borderColor = UIColor.green.cgColor
         self.addSubview(textField)
         
     }
@@ -45,47 +69,47 @@ class SearchTableViewCell: UITableViewCell,YKSearchTextFieldDataSourceDelegate {
     }
     
     
-    func searchTextField(searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int {
+    func searchTextField(_ searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int {
         return self.filterArray.count
     }
     
-    func searchTextField(searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = searchTextField.popView.tableView.dequeueReusableCellWithIdentifier("cell")
+    func searchTextField(_ searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell {
+        var cell = searchTextField.popView.tableView.dequeueReusableCell(withIdentifier: "cell")
         if cell == nil {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: "cell")
+            cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         }
         
         cell?.textLabel?.text = filterArray[indexPath.row]
         cell?.textLabel?.numberOfLines = 0;
-        cell?.textLabel?.font = UIFont.systemFontOfSize(14)
+        cell?.textLabel?.font = UIFont.systemFont(ofSize: 14)
         
         return cell!
     }
     
     
-    func searchTextField(searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func searchTextField(_ searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: IndexPath) {
  
         textField.text = filterArray[indexPath.row]
     }
     
     
-    func searchTextField(searchTextField: YKSearchTextField, didHideTableView tableView:UITableView) {
+    func searchTextField(_ searchTextField: YKSearchTextField, didHideTableView tableView:UITableView) {
         
     }
     
     
-    func searchTextField(searchTextField: YKSearchTextField, textDidChange text: String?) {
+    func searchTextField(_ searchTextField: YKSearchTextField, textDidChange text: String?) {
         self.filterArray.removeAll()
         if text?.characters.count > 0 {
             for string in self.dataArray {
-                if string.containsString(text!) {
+                if string.contains(text!) {
                     self.filterArray.append(string)
                 }
             }
             
         }else{
             
-            self.filterArray.appendContentsOf(self.dataArray)
+            self.filterArray.append(contentsOf: self.dataArray)
         }
         
         textField.popView.tableView.reloadData()

@@ -11,11 +11,11 @@ import UIKit
 
 
 public protocol YKSearchTextFieldDataSourceDelegate: NSObjectProtocol {
-    func searchTextField(searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int
-    func searchTextField(searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    func searchTextField(searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    func searchTextField(searchTextField: YKSearchTextField, textDidChange text: String?)
-    func searchTextField(searchTextField: YKSearchTextField, didHideTableView tableView:UITableView)
+    func searchTextField(_ searchTextField: YKSearchTextField, numberOfRowsInSection section: Int) -> Int
+    func searchTextField(_ searchTextField: YKSearchTextField, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell
+    func searchTextField(_ searchTextField: YKSearchTextField, didSelectRowAtIndexPath indexPath: IndexPath)
+    func searchTextField(_ searchTextField: YKSearchTextField, textDidChange text: String?)
+    func searchTextField(_ searchTextField: YKSearchTextField, didHideTableView tableView:UITableView)
 }
 
 
@@ -23,18 +23,18 @@ public protocol YKSearchTextFieldDataSourceDelegate: NSObjectProtocol {
 
 
 
-public class YKSearchTextField: UITextField {
+open class YKSearchTextField: UITextField {
     
     
     
-    public weak var dataSourceDelegate: YKSearchTextFieldDataSourceDelegate? {
+    open weak var dataSourceDelegate: YKSearchTextFieldDataSourceDelegate? {
         didSet {
             popView.dataSourceDelegate = self.dataSourceDelegate
         }
     }
     
     
-    var popView = YKSearchPopView(frame:CGRectZero)
+    var popView = YKSearchPopView(frame:CGRect.zero)
     
     // MARK: Init Methods
     required public init?(coder aDecoder: NSCoder) {
@@ -49,18 +49,18 @@ public class YKSearchTextField: UITextField {
     
     
     // MARK: Setup Methods
-    private func setupTextField() {
-        addTarget(self, action: #selector(YKSearchTextField.editingBegin(_:)), forControlEvents:.EditingDidBegin)
-        addTarget(self, action: #selector(YKSearchTextField.editingChange(_:)), forControlEvents:.EditingChanged)
+    fileprivate func setupTextField() {
+        addTarget(self, action: #selector(YKSearchTextField.editingBegin(_:)), for:.editingDidBegin)
+        addTarget(self, action: #selector(YKSearchTextField.editingChange(_:)), for:.editingChanged)
         popView.textField = self
     }
     
     
-    func editingBegin(textField: YKSearchTextField) {
+    func editingBegin(_ textField: YKSearchTextField) {
         popView.show()
     }
     
-    func editingChange(textField: YKSearchTextField) {
+    func editingChange(_ textField: YKSearchTextField) {
         if self.dataSourceDelegate != nil {
             self.dataSourceDelegate?.searchTextField(textField, textDidChange: textField.text)
         }

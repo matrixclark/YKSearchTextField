@@ -21,7 +21,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Do any additional setup after loading the view, typically from a nib.
         self.dataArray = ["项目一","项目二","项目三","项目四"]
         
-        tableView.frame = CGRectMake(0, 20, ScreenWidth, ScreenHeight-20)
+        tableView.frame = CGRect(x: 0, y: 20, width: ScreenWidth, height: ScreenHeight-20)
         tableView.delegate = self
         tableView.dataSource = self
         self.view.addSubview(tableView)
@@ -37,21 +37,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     // MARK: - Table view data source
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.dataArray.count
     }
     
     
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("cell")
+        var cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         if cell == nil {
-            cell = SearchTableViewCell(style: .Default, reuseIdentifier: "cell")
+            cell = SearchTableViewCell(style: .default, reuseIdentifier: "cell")
         }
         
         cell?.textLabel?.text = dataArray[indexPath.row]
